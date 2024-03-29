@@ -18,7 +18,6 @@ const Login = () => {
         navigate('/')
         // 2.提示一下用户
         message.success('登陆成功')
-
     }
 return (
 <div className="login">
@@ -34,10 +33,8 @@ return (
                 message: '请输入手机号!',
               },
               {
-                
                 pattern: /^1[3-9]\d{9}$/,
-                message: '手机号码格式不对!'
-                    
+                message: '手机号码格式不对!'   
               }
             ]}>
                 <Input size="large" placeholder="请输入手机号" />

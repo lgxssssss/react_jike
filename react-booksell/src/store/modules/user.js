@@ -1,13 +1,15 @@
 //和用户相关的状态管理
 import {createSlice} from '@reduxjs/toolkit'
 import { request } from '@/utils'
+import {setToken as _setToken , getToken} from '@/utils'
 
 const userStore = createSlice({
     name:"user",
     //数据状态
     initialState:{
         //先看本地有没有，没有的话就用空串
-        token:localStorage.getItem('token_key') || ''
+        // token:localStorage.getItem('token_key') || ''
+        token:getToken() || ''
     },
     //同步修改方法
     reducers:{
@@ -15,7 +17,8 @@ const userStore = createSlice({
             //这是存在redux里面
             state.token = action.payload
             //在localstorage也存一份
-            localStorage.setItem('token_key',action.payload)
+            // localStorage.setItem('token_key',action.payload)
+            _setToken(action.payload)
         }
     }
 })
