@@ -11,30 +11,22 @@ import {
     message
   } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import './index.scss'
 
  import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
-import { useEffect, useState } from 'react'
-import { createArticleAPI, getChannelAPI } from '@/apis/article'
+import {  useEffect, useState } from 'react'
+import { createArticleAPI } from '@/apis/article'
+import { useChannel } from '@/hooks/useChannel'
   const { Option } = Select
 
 
   
   const Publish = () => {
     //获取频道列表
-    const [channelList, setChannelList] = useState([])
+    const { channelList} = useChannel()
 
-    useEffect(()=>{
-        //封装函数，在函数体内调用接口
-        const getChannelList = async ()=>{
-            const res = await getChannelAPI()
-            setChannelList(res.data.channels)
-        }
-        //调用函数
-        getChannelList()
-    },[])
 
     //提交表单
     const onFinish = (formValue) => {
@@ -70,6 +62,8 @@ import { createArticleAPI, getChannelAPI } from '@/apis/article'
         console.log('切换封面了',e.target.value);
         setImageType(e.target.value)
     }
+
+
 
     return (
       <div className="publish">
