@@ -48,7 +48,7 @@ import { useForm } from 'antd/es/form/Form'
           }
           //2.调用接口提交
           createArticleAPI(reqData)
-    }
+    } 
 
     //上传回调
     const [imageList, setimageList] = useState([])
@@ -75,7 +75,21 @@ import { useForm } from 'antd/es/form/Form'
       //1.通过id获取数据
       async function getArticleDetail(){
         const res = await getArticleById(articleId)
-        form.setFieldsValue(res.data)
+        const data = res.data
+        const {cover} = data
+        form.setFieldsValue({
+          ...data,
+          type: data.cover.type
+        })
+      // 为什么现在的写法无法回填封面？
+      // 数据结构的问题  set方法 -> { type: 3 }   { cover: { type: 3}}
+
+      // 回填图片列表
+      setImageType(data.cover.type)
+      //显示图片
+      setimageList(data.cover.images.map(url =>{
+        return { url}
+      }))
       }
       getArticleDetail()
       //2.调用实例方法完成回填
@@ -136,6 +150,7 @@ import { useForm } from 'antd/es/form/Form'
               name='image'
               onChange={onChange}
               maxCount={imageType}
+              fileList={imageList}
               >
               <div style={{ marginTop: 8 }}>
                 <PlusOutlined />
