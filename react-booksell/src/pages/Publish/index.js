@@ -11,13 +11,13 @@ import {
     message
   } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams, useNavigate } from 'react-router-dom'
 import './index.scss'
 
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import {  useEffect, useState } from 'react'
-import { createArticleAPI, getArticleById } from '@/apis/article'
+import { createArticleAPI, getArticleById, updateArticleAPI } from '@/apis/article'
 import { useChannel } from '@/hooks/useChannel'
 import { useForm } from 'antd/es/form/Form'
   const { Option } = Select
@@ -42,12 +42,27 @@ import { useForm } from 'antd/es/form/Form'
             content,
             cover: {
               type: imageType, //封面模式
-              images:imageList.map(item => item.response.data.url) //图片列表
+              //这里的url处理逻辑只是在新增时候的逻辑
+              //编辑的时候需要做处理
+              images:imageList.map(item =>{
+                if(item.response){
+                  return  item.response.data.url
+                }else{
+                  return item.url
+                }
+              }) //图片列表
             },
             channel_id
           }
           //2.调用接口提交
-          createArticleAPI(reqData)
+          //调用不同的接口 新增-新增接口   编辑-更新接口  通过id判断
+          if(articleId){
+            //更新接口
+            updateArticleAPI({...reqData, id:articleId})  //补参
+          }else{
+            createArticleAPI(reqData)
+          }
+          
     } 
 
     //上传回调
@@ -94,6 +109,8 @@ import { useForm } from 'antd/es/form/Form'
       getArticleDetail()
       //2.调用实例方法完成回填
     },[articleId,form])
+
+    const navigate = useNavigate()
 
     return (
       <div className="publish">
@@ -173,7 +190,7 @@ import { useForm } from 'antd/es/form/Form'
             </Form.Item>
             <Form.Item wrapperCol={{ offset: 4 }}>
               <Space>
-                <Button size="large" type="primary" htmlType="submit">
+                <Button size="large" type="primary" htmlType="submit" >
                   发布文章
                 </Button>
               </Space>
